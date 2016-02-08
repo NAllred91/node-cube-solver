@@ -1,6 +1,6 @@
 'use strict';
 
-var constants = require('../../../../node-cube-model').constants,
+var constants = require('node-cube-model').constants,
 	TOP = constants.FACES.TOP,
 	LEFT = constants.FACES.LEFT,
 	FRONT = constants.FACES.FRONT,

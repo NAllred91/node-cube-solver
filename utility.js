@@ -1,9 +1,9 @@
 'use strict';
 
-var constants = require('../node-cube-model').constants,
+var constants = require('node-cube-model').constants,
 	_ = require('underscore');
 
-exports.applyMoves = function(cube, moves)
+var applyMoves = function(cube, moves)
 {
 	_.each(moves, function(move)
 	{
@@ -13,7 +13,7 @@ exports.applyMoves = function(cube, moves)
 		}
 		else if(_.isString(move))
 		{
-			cube[move]();
+			cube.rotateCube(move);
 		}
 		else
 		{
@@ -22,19 +22,25 @@ exports.applyMoves = function(cube, moves)
 	});
 };
 
-exports.getPieceLocation = function(cube, piece)
+// TODO refactor so that a "piece" is an object instead of an array.
+var getPiece = function(cube, faces)
 {
-	piece.sort();
+	var faceColors = _.map(faces, function(face)
+	{
+		return getFaceColor(cube, face);
+	});
+
+	faceColors.sort();
 	var cubeArray = cube.getFacesArray();
 
 	var location = _.find(constants.PIECELOCATIONS, function(pieceLocation)
 	{
-		var valuesOnCube = _.map(pieceLocation, function(sticker)
+		var pieceColors = _.map(pieceLocation, function(sticker)
 		{
 			return cubeArray[sticker[0]][sticker[1]];
 		});
 
-		return _.isEqual(valuesOnCube.sort(), piece);
+		return _.isEqual(pieceColors.sort(), faceColors);
 	});
 
 	if(!location)
@@ -42,5 +48,25 @@ exports.getPieceLocation = function(cube, piece)
 		throw new Error("Piece was not found on the cube!");
 	}
 
-	return location;
+
+
+	return _.map(location, function(sticker)
+		{
+			var stickerColor = cubeArray[sticker[0]][sticker[1]];
+			return sticker.concat(stickerColor);
+		});
 };
+
+var getFaceColor = function(cube, face)
+{
+
+	// The center piece on a face
+	// is the color of the face.
+	return cube.getFacesArray()[face][4];
+}
+
+module.exports = {
+	applyMoves: applyMoves,
+	getPiece: getPiece,
+	getFaceColor: getFaceColor
+}
