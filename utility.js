@@ -23,6 +23,7 @@ var applyMoves = function(cube, moves)
 };
 
 // TODO refactor so that a "piece" is an object instead of an array.
+// currently, a piece is an array of stickers.  A sticker is an array [face its on, position on face, color]
 var getPiece = function(cube, faces)
 {
 	var faceColors = _.map(faces, function(face)

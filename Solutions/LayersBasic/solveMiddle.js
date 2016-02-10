@@ -125,7 +125,6 @@ module.exports = function(cube)
 		{
 			utility.applyMoves(cube, middleLayerAlgorithms['leftSide' + constants.FACES.RIGHT]);
 		}
-		testUtility.printCube(cube.getFacesArray());
 
 		return true;
 	};
@@ -137,6 +136,4 @@ module.exports = function(cube)
 		solvePiecesOnBottom();
 		displacedAPiece = displaceAnIncorrectlyOrientedPiece();
 	}
-	
-	testUtility.printCube(cube.getFacesArray());
 };
