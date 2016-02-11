@@ -6,7 +6,7 @@ var fs = require('fs'),
 var SolutionManager = function()
 {
     var self = this;
-    var solutionNames = ['LayersBasic']
+    var solutionNames = ['LayersBasic'];
     self.solutions = {};
 
     _.each(solutionNames, function(solutionName)

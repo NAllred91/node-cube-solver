@@ -49,8 +49,6 @@ var getPiece = function(cube, faces)
         throw new Error("Piece was not found on the cube!");
     }
 
-
-
     return _.map(location, function(sticker)
         {
             var stickerColor = cubeArray[sticker[0]][sticker[1]];
@@ -64,10 +62,10 @@ var getFaceColor = function(cube, face)
     // The center piece on a face
     // is the color of the face.
     return cube.getFacesArray()[face][4];
-}
+};
 
 module.exports = {
     applyMoves: applyMoves,
     getPiece: getPiece,
     getFaceColor: getFaceColor
-}
+};
