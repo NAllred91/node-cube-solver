@@ -97,7 +97,9 @@ module.exports = function(cube)
 		var incorrectPiece = _.find(pieceFaces, function(faces)
 		{
 			var piece = utility.getPiece(cube, faces);
-			if(utility.getFaceColor(cube, piece[0][0]) !== piece[0][2])
+			
+			if(utility.getFaceColor(cube, piece[0][0]) !== piece[0][2]
+				|| utility.getFaceColor(cube, piece[1][0]) !== piece[1][2])
 			{
 				return true;
 			}

@@ -63,8 +63,9 @@ var constants = require('node-cube-model').constants,
 exports['flipBackCorners'] = [[LEFT,CCW],[TOP,CCW],[LEFT,CW],[FRONT,CW],[TOP,CCW],[FRONT,CCW],[LEFT,CCW],[TOP,CW],[LEFT,CW]];
 exports['flipBackAndFrontCorners'] = [[LEFT,CCW],[TOP,CCW],[LEFT,CW],[FRONT,CW],[TOP,CCW],[TOP,CCW],[FRONT,CCW],[LEFT,CCW],[TOP,CW],[LEFT,CW]];
 // Rotates all corners except the one in the 8 position.
-exports['rotateCornersCW'] = [[LEFT,CW],[TOP,CW],[LEFT,CCW],[TOP,CW],[LEFT,CW],[TOP,CCW],[TOP,CCW],[LEFT,CCW]];
-exports['rotateCornersCCW'] = [[LEFT,CCW],[TOP,CCW],[LEFT,CW],[TOP,CCW],[LEFT,CCW],[TOP,CCW],[TOP,CCW],[LEFT,CW]];
+// TODO the final two top rotations in these algorithms could be made unnecessary.
+exports['rotateCornersCW'] = [[LEFT,CW],[TOP,CW],[LEFT,CCW],[TOP,CW],[LEFT,CW],[TOP,CCW],[TOP,CCW],[LEFT,CCW],[TOP,CCW],[TOP,CCW]];
+exports['rotateCornersCCW'] = [[LEFT,CCW],[TOP,CCW],[LEFT,CW],[TOP,CCW],[LEFT,CCW],[TOP,CCW],[TOP,CCW],[LEFT,CW],[TOP,CCW],[TOP,CCW]];
 
 
 

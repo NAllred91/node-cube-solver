@@ -14,4 +14,7 @@ module.exports = function(cube)
 	cube.rotateCube(constants.CUBEROTATIONS.BACK);
 	cube.rotateCube(constants.CUBEROTATIONS.BACK);
 	solveTopCorners(cube);
+	cube.rotateCube(constants.CUBEROTATIONS.BACK);
+	cube.rotateCube(constants.CUBEROTATIONS.BACK);
+	validation.validateBottomCornersSolved(cube);
 };

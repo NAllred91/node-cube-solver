@@ -7,8 +7,6 @@ var constants = require('node-cube-model').constants,
 	topCornerAlgorithms = require('./Algorithms/TopCorners'),
 	_ = require('underscore');
 
-	var testUtility = require('../../Tests/testUtilities');
-
 module.exports = function(cube)
 {
 	var positionCorners = function()
@@ -177,13 +175,97 @@ module.exports = function(cube)
 			return topSticker[1];
 		});
 
-		console.log(topColorDirection)
+		var checkIfCorrect = function(topColorDirection)
+		{
+			return _.isEqual(topColorDirection, [1,1,1,1])
+		};
 
+		var checkIfOneOffFromCorrect = function(topColorDirection)
+		{
+			var counts = _.countBy(topColorDirection, function(direction)
+			{
+				return direction;
+			});
 
+			return counts['1'] === 1 && (counts['0'] === 3 || counts['2'] === 3);
+		};
+
+		var getCounterClockWiseRotation = function(topColorDirection)
+		{
+			return _.map(topColorDirection, function(direction, index)
+			{
+				if(index === 2)
+				{
+					return direction;
+				}
+
+				return direction + 1 % 2;
+			});
+		};
+
+		var getClockWiseRotation = function(topColorDirection)
+		{
+			var test =  _.map(topColorDirection, function(direction, index)
+			{
+				if(index === 1)
+				{
+					return direction;
+				}
+
+				direction = direction - 1;
+				if(direction === -1)
+				{
+					direction = 2
+				}
+				return direction;
+			});
+
+			return test
+		};
+
+		if(checkIfCorrect(topColorDirection))
+		{
+			return;
+		}
+
+		if(checkIfCorrect(getClockWiseRotation(topColorDirection)))
+		{
+			utility.applyMoves(cube, topCornerAlgorithms['rotateCornersCW']);
+			return;
+		}
+
+		if(checkIfCorrect(getCounterClockWiseRotation(topColorDirection)))
+		{
+			utility.applyMoves(cube, topCornerAlgorithms['rotateCornersCCW']);
+			return;
+		}
+
+		if(checkIfOneOffFromCorrect(topColorDirection))
+		{
+			cube.rotateCube(CUBEROTATIONS.CW);
+			orientCorners();
+			return;
+		}
+
+		if(checkIfOneOffFromCorrect(getClockWiseRotation(topColorDirection)))
+		{
+			utility.applyMoves(cube, topCornerAlgorithms['rotateCornersCW']);
+			orientCorners();
+			return;
+		};
+
+		if(checkIfOneOffFromCorrect(getCounterClockWiseRotation(topColorDirection)))
+		{
+			utility.applyMoves(cube, topCornerAlgorithms['rotateCornersCCW']);
+			orientCorners();
+			return;
+		};
+
+		cube.rotateCube(CUBEROTATIONS.CW);
+		orientCorners();
 	};
-	//testUtility.printCube(cube.getFacesArray());
+
 	positionCorners();
 	positionTopFace();
 	orientCorners();
-	
 };
