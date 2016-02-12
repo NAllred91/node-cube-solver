@@ -45,7 +45,6 @@ exports[BOTTOM + '6' + BACK] = [[BOTTOM, CW], [LEFT, CCW], [BOTTOM, CCW], [LEFT,
 exports[BOTTOM + '8' + RIGHT] = [[BOTTOM, CW], [BACK, CW], [BOTTOM, CW], [BACK, CCW]];
 exports[BOTTOM + '8' + BOTTOM] = [[BOTTOM, CW], [LEFT, CCW], [BOTTOM, CCW], [BOTTOM, CCW], [LEFT, CW], [BOTTOM, CW], [LEFT, CCW], [BOTTOM, CCW], [LEFT, CW]];
 
-
 /**
  These algorithms are used to position the described
  edge piece in the top back edge of the cube.
