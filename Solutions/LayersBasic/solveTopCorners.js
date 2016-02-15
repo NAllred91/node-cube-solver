@@ -1,20 +1,23 @@
 'use strict';
 
-var constants = require('node-cube-model').constants,
-    FACES = constants.FACES,
-    CUBEROTATIONS = constants.CUBEROTATIONS,
-    utility = require('../../utility'),
+const   constants = require('node-cube-model').constants,
+        FACES = constants.FACES,
+        CUBEROTATIONS = constants.CUBEROTATIONS;
+
+var utility = require('../../utility'),
     topCornerAlgorithms = require('./Algorithms/TopCorners'),
     _ = require('underscore');
 
 module.exports = function(cube) {
     var positionCorners = function() {
-        // the [0][1] should be replaced with finding the FACES.TOP sticker and getting its position on the face.
+
+        // Create an object that maps the current position on the top face to the
+        // position the piece should end up in.
         var topCornerMap = _.invert({
-            0: utility.getPiece(cube, [FACES.TOP, FACES.LEFT, FACES.BACK])[0][1],
-            2: utility.getPiece(cube, [FACES.TOP, FACES.BACK, FACES.RIGHT])[0][1],
-            8: utility.getPiece(cube, [FACES.TOP, FACES.RIGHT, FACES.FRONT])[0][1],
-            6: utility.getPiece(cube, [FACES.TOP, FACES.FRONT, FACES.LEFT])[0][1]
+            0: cube.getPiece([FACES.TOP, FACES.LEFT, FACES.BACK]).getStickerOnFace(FACES.TOP).position,
+            2: cube.getPiece([FACES.TOP, FACES.BACK, FACES.RIGHT]).getStickerOnFace(FACES.TOP).position,
+            8: cube.getPiece([FACES.TOP, FACES.RIGHT, FACES.FRONT]).getStickerOnFace(FACES.TOP).position,
+            6: cube.getPiece([FACES.TOP, FACES.FRONT, FACES.LEFT]).getStickerOnFace(FACES.TOP).position
         });
 
         topCornerMap[0] = parseInt(topCornerMap[0]);
@@ -25,10 +28,10 @@ module.exports = function(cube) {
         var rotateCubeAndMap = function(cube, map) {
             cube.rotateCube(CUBEROTATIONS.CW);
             var temp = topCornerMap[0];
-            topCornerMap[0] = topCornerMap[6];
-            topCornerMap[6] = topCornerMap[8];
-            topCornerMap[8] = topCornerMap[2];
-            topCornerMap[2] = temp;
+            map[0] = map[6];
+            map[6] = map[8];
+            map[8] = map[2];
+            map[2] = temp;
         };
 
         var valueToGetToZero;
@@ -90,14 +93,18 @@ module.exports = function(cube) {
     };
 
     var positionTopFace = function() {
-        var leftCornerPiece = utility.getPiece(cube, [FACES.TOP, FACES.LEFT, FACES.BACK]);
-        var nonTopFaces = [];
+        // Get the left corner piece.
+        var leftCornerPiece = cube.getPiece([FACES.TOP, FACES.LEFT, FACES.BACK]);
 
-        _.each(leftCornerPiece, function(sticker) {
-            if(sticker[0] !== FACES.TOP) {
-                nonTopFaces.push(sticker[0]);
-            }
-        });
+        // Get the two stickers of that piece that are not the top colored sticker.
+        var nonTopFaces = _.chain(leftCornerPiece.stickers)
+            .map(function(sticker) {
+                return sticker.face;
+            })
+            .reject(function(face) {
+                return face === FACES.TOP;
+            })
+            .value();
 
         nonTopFaces.sort();
 
@@ -123,25 +130,25 @@ module.exports = function(cube) {
         // Since the corners have already been positioned, these corners
         // go clockwise starting at the 0 position of the top face.
         var cornerPieces = [
-            utility.getPiece(cube, [FACES.TOP, FACES.LEFT, FACES.BACK]),
-            utility.getPiece(cube, [FACES.TOP, FACES.BACK, FACES.RIGHT]),
-            utility.getPiece(cube, [FACES.TOP, FACES.RIGHT, FACES.FRONT]),
-            utility.getPiece(cube, [FACES.TOP, FACES.FRONT, FACES.LEFT])
+            cube.getPiece([FACES.TOP, FACES.LEFT, FACES.BACK]),
+            cube.getPiece([FACES.TOP, FACES.BACK, FACES.RIGHT]),
+            cube.getPiece([FACES.TOP, FACES.RIGHT, FACES.FRONT]),
+            cube.getPiece([FACES.TOP, FACES.FRONT, FACES.LEFT])
         ];
 
-        var topFaceColor = utility.getFaceColor(cube, FACES.TOP);
+        var topFaceColor = cube.getFaceColor(FACES.TOP);
 
-        // 1 is top, 0 is left side of side face, 2 is right side of side face.
-        // TODO can't just assume that the first sticker in the array is the top...
+        // Determine how the piece is oriented.
+        // 1 is the top color sticker is on top,
+        // 0 is the top color sticker is on a side face in the 0 position,
+        // 2 is top color sticker is on a side fance in the 2 position.
         var topColorDirection = _.map(cornerPieces, function(piece) {
-            var topSticker = _.find(piece, function(sticker) {
-                return sticker[2] === topFaceColor;
-            });
-
-            if(topSticker[0] === FACES.TOP) {
+            var topColoredSticker = piece.getStickerOfColor(topFaceColor);
+            if(topColoredSticker.face === FACES.TOP) {
                 return 1;
             }
-            return topSticker[1];
+
+            return topColoredSticker.position;
         });
 
         var checkIfCorrect = function(topColorDirection) {
@@ -205,14 +212,12 @@ module.exports = function(cube) {
             orientCorners();
             return;
         }
-        ;
 
         if(checkIfOneOffFromCorrect(getCounterClockWiseRotation(topColorDirection))) {
             utility.applyMoves(cube, topCornerAlgorithms['rotateCornersCCW']);
             orientCorners();
             return;
         }
-        ;
 
         cube.rotateCube(CUBEROTATIONS.CW);
         orientCorners();

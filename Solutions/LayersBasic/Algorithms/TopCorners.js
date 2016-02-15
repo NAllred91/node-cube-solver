@@ -53,12 +53,12 @@
  }
  **/
 
-var constants = require('node-cube-model').constants,
-    TOP = constants.FACES.TOP,
-    LEFT = constants.FACES.LEFT,
-    FRONT = constants.FACES.FRONT,
-    CW = constants.FACEROTATIONS.CW,
-    CCW = constants.FACEROTATIONS.CCW;
+const constants = require('node-cube-model').constants,
+        TOP = constants.FACES.TOP,
+        LEFT = constants.FACES.LEFT,
+        FRONT = constants.FACES.FRONT,
+        CW = constants.FACEROTATIONS.CW,
+        CCW = constants.FACEROTATIONS.CCW;
 
 exports['flipBackCorners'] = [[LEFT, CCW], [TOP, CCW], [LEFT, CW], [FRONT, CW], [TOP, CCW], [FRONT, CCW], [LEFT, CCW], [TOP, CW], [LEFT, CW]];
 exports['flipBackAndFrontCorners'] = [[LEFT, CCW], [TOP, CCW], [LEFT, CW], [FRONT, CW], [TOP, CCW], [TOP, CCW], [FRONT, CCW], [LEFT, CCW], [TOP, CW], [LEFT, CW]];

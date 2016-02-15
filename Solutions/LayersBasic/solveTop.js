@@ -1,50 +1,38 @@
 'use strict';
 
-var constants = require('node-cube-model').constants,
-    utility = require('../../utility'),
+const   constants = require('node-cube-model').constants,
+        FACES = constants.FACES;
+
+var utility = require('../../utility'),
     topLayerAlgorithms = require('./Algorithms/TopLayer'),
     _ = require('underscore');
 
 module.exports = function(cube) {
     var positionTopLeftCorner = function() {
-        var cubeArray = cube.getFacesArray();
-        var piece = utility.getPiece(cube, [0, 1, 4]);
-        var faces = _.map(piece, function(sticker) {
-            return sticker[0];
-        });
+        var piece = cube.getPiece([FACES.TOP, FACES.LEFT, FACES.BACK]);
 
-        var topFaceColor = utility.getFaceColor(cube, constants.FACES.TOP);
-
-        var topColorSticker = _.find(piece, function(sticker) {
-            return sticker[2] === topFaceColor;
-        });
+        var topFaceColor = cube.getFaceColor(constants.FACES.TOP);
+        var topColorSticker = piece.getStickerOfColor(topFaceColor);
 
         var algorithmToUse = '';
 
-        if(_.contains(faces, constants.FACES.TOP)) {
-            algorithmToUse = '0' + topColorSticker[1] + topColorSticker[0];
+        if(piece.getStickerOnFace(constants.FACES.TOP)) {
+            algorithmToUse = '0' + topColorSticker.position + topColorSticker.face;
         }
         else {
-            algorithmToUse = '5' + topColorSticker[1] + topColorSticker[0];
+            algorithmToUse = '5' + topColorSticker.position + topColorSticker.face;
         }
 
         utility.applyMoves(cube, topLayerAlgorithms[algorithmToUse]);
     };
 
     var positionTopBackEdge = function() {
-        var cubeArray = cube.getFacesArray();
-        var piece = utility.getPiece(cube, [0, 4]);
-        var faces = _.map(piece, function(sticker) {
-            return sticker[0];
-        });
+        var piece = cube.getPiece([FACES.TOP, FACES.BACK]);
 
-        var topFaceColor = utility.getFaceColor(cube, constants.FACES.TOP);
+        var topFaceColor = cube.getFaceColor(constants.FACES.TOP);
+        var topColorSticker = piece.getStickerOfColor(topFaceColor);
 
-        var topColorSticker = _.find(piece, function(sticker) {
-            return sticker[2] === topFaceColor;
-        });
-
-        var algorithmToUse = '' + topColorSticker[0] + topColorSticker[1];
+        var algorithmToUse = '' + topColorSticker.face + topColorSticker.position;
 
         utility.applyMoves(cube, topLayerAlgorithms[algorithmToUse], algorithmToUse);
     };

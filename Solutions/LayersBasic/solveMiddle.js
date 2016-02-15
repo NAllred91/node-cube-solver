@@ -1,7 +1,9 @@
 'use strict';
 
-var constants = require('node-cube-model').constants,
-    utility = require('../../utility'),
+const   constants = require('node-cube-model').constants,
+        FACES = constants.FACES;
+
+var utility = require('../../utility'),
     middleLayerAlgorithms = require('./Algorithms/MiddleLayer'),
     _ = require('underscore');
 
@@ -16,52 +18,55 @@ module.exports = function(cube) {
         do {
             solvedAtleastOnePiece = false;
             _.times(4, function() {
-                var piecesForThisFace = _.map([[1, 2], [2, 3]], function(faces) {
-                    return utility.getPiece(cube, faces);
+
+                // Get the two pieces that belong in the middle for the front face.
+                var piecesForThisFace = _.map([[FACES.LEFT, FACES.FRONT], [FACES.FRONT, FACES.RIGHT]], function(faces) {
+                    return cube.getPiece(faces);
                 });
 
-                var frontColor = utility.getFaceColor(cube, constants.FACES.FRONT);
-                var rightColor = utility.getFaceColor(cube, constants.FACES.RIGHT);
+                // Get the colors of the front, right, and left faces.
+                var frontColor = cube.getFaceColor(constants.FACES.FRONT);
+                var rightColor = cube.getFaceColor(constants.FACES.RIGHT);
+                var leftColor = cube.getFaceColor(constants.FACES.LEFT);
 
+                // Find a piece that is not currently in the correct position that
+                // can be moved to the correct position.
                 var pieceToSolve = _.find(piecesForThisFace, function(piece) {
-                    if(piece[0][0] === constants.FACES.BOTTOM) {
-                        if(piece[1][2] === frontColor) {
-                            return true;
-                        }
-                    }
+                    // Get the sticker that is on the bottom face.
+                    var stickerOnBottomFace = piece.getStickerOnFace(constants.FACES.BOTTOM);
 
-                    if(piece[1][0] === constants.FACES.BOTTOM) {
-                        if(piece[0][2] === frontColor) {
-                            return true;
-                        }
+                    // If there is a sticker on the bottom face and the color
+                    // of that sticker isn't the front color, it can be solved.
+                    if(stickerOnBottomFace && stickerOnBottomFace.color !== frontColor) {
+                        return true;
                     }
                 });
+
+
                 if(pieceToSolve) {
                     solvedAtleastOnePiece = true;
                     var algorithmToUse;
 
-                    var notFrontColoredSticker = _.find(pieceToSolve, function(sticker) {
-                        return sticker[2] !== frontColor;
-                    });
+                    // Get the two stickers of the piece.
+                    var stickerOnBottomFace = pieceToSolve.getStickerOnFace(constants.FACES.BOTTOM);
+                    var frontColoredSticker = pieceToSolve.getStickerOfColor(frontColor);
 
-                    var frontColoredSticker = _.find(pieceToSolve, function(sticker) {
-                        return sticker[2] === frontColor;
-                    });
-
-                    if(notFrontColoredSticker[2] === rightColor) {
+                    if(stickerOnBottomFace.color === rightColor) {
                         algorithmToUse = 'rightSide';
                     }
-                    else {
+                    else if(stickerOnBottomFace.color === leftColor) {
                         algorithmToUse = 'leftSide';
                     }
+                    else {
+                        throw new Error("Error solving middle face.");
+                    }
 
-                    algorithmToUse += frontColoredSticker[0];
+                    algorithmToUse += frontColoredSticker.face;
 
                     utility.applyMoves(cube, middleLayerAlgorithms[algorithmToUse]);
                 }
 
                 cube.rotateCube(constants.CUBEROTATIONS.CW);
-                return;
             });
         } while(solvedAtleastOnePiece);
 
@@ -71,28 +76,35 @@ module.exports = function(cube) {
     // knock any incorrect middle row pieces to the
     // bottom with a random piece, then solve as normal.
     var displaceAnIncorrectlyOrientedPiece = function() {
-        var pieceFaces = [[1, 2], [2, 3], [3, 4], [4, 1]]
-        var incorrectPiece = _.find(pieceFaces, function(faces) {
-            var piece = utility.getPiece(cube, faces);
+        var pieceFaces = [
+            [FACES.LEFT, FACES.FRONT],
+            [FACES.FRONT, FACES.RIGHT],
+            [FACES.RIGHT, FACES.BACK],
+            [FACES.BACK, FACES.LEFT]
+        ];
 
-            if(utility.getFaceColor(cube, piece[0][0]) !== piece[0][2]
-                || utility.getFaceColor(cube, piece[1][0]) !== piece[1][2]) {
+        var incorrectPieceFaces = _.find(pieceFaces, function(faces) {
+            var piece = cube.getPiece(faces);
+            var stickers = piece.stickers;
+
+            if(cube.getFaceColor(stickers[0].face) !== stickers[0].color
+                || cube.getFaceColor(stickers[1].face) !== stickers[1].color) {
                 return true;
             }
         });
 
-        if(!incorrectPiece) {
+        if(!incorrectPieceFaces) {
             return false;
         }
 
-        if(incorrectPiece === pieceFaces[2]) {
+        if(incorrectPieceFaces === pieceFaces[2]) {
             cube.rotateCube(constants.CUBEROTATIONS.CW);
         }
-        if(incorrectPiece === pieceFaces[3]) {
+        if(incorrectPieceFaces === pieceFaces[3]) {
             cube.rotateCube(constants.CUBEROTATIONS.CCW);
         }
 
-        if(incorrectPiece === pieceFaces[2] || incorrectPiece === pieceFaces[1]) {
+        if(incorrectPieceFaces === pieceFaces[2] || incorrectPieceFaces === pieceFaces[1]) {
             utility.applyMoves(cube, middleLayerAlgorithms['rightSide' + constants.FACES.LEFT]);
         }
         else {

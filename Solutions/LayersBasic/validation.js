@@ -4,7 +4,6 @@ var validateTopSolved = function(cube) {
     if(_.uniq(cubeArray[0]).length !== 1) {
         var err = new Error("Invalid solution, top face is incorrect.");
         err.cube = cubeArray;
-        err.algorithms = algorithmsUsed;
         throw err;
     }
 

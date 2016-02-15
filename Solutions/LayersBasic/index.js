@@ -1,6 +1,6 @@
 'use strict';
-var constants = require('node-cube-model').constants,
-    validation = require('./validation'),
+const constants = require('node-cube-model').constants;
+var validation = require('./validation'),
     solveTop = require('./solveTop'),
     solveMiddle = require('./solveMiddle'),
     solveTopCorners = require('./solveTopCorners');

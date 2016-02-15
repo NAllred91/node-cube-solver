@@ -1,7 +1,6 @@
 'use strict';
 
-var fs = require('fs'),
-    _ = require('underscore');
+var _ = require('underscore');
 
 var SolutionManager = function() {
     var self = this;

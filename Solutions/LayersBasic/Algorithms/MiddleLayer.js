@@ -1,16 +1,13 @@
 'use strict';
 
-var constants = require('node-cube-model').constants,
-    TOP = constants.FACES.TOP,
-    LEFT = constants.FACES.LEFT,
-    FRONT = constants.FACES.FRONT,
-    RIGHT = constants.FACES.RIGHT,
-    BACK = constants.FACES.BACK,
-    BOTTOM = constants.FACES.BOTTOM,
-    CW = constants.FACEROTATIONS.CW,
-    CCW = constants.FACEROTATIONS.CCW,
-    ROTATECUBECCW = constants.CUBEROTATIONS.CCW,
-    ROTATECUBECW = constants.CUBEROTATIONS.CW;
+const   constants = require('node-cube-model').constants,
+        LEFT = constants.FACES.LEFT,
+        FRONT = constants.FACES.FRONT,
+        RIGHT = constants.FACES.RIGHT,
+        BACK = constants.FACES.BACK,
+        BOTTOM = constants.FACES.BOTTOM,
+        CW = constants.FACEROTATIONS.CW,
+        CCW = constants.FACEROTATIONS.CCW;
 
 /**
  These algorithms are used to take a piece from the
@@ -27,8 +24,8 @@ var leftFaceToRightSide = [[RIGHT, CCW], [BOTTOM, CW], [RIGHT, CW], [BOTTOM, CW]
 exports["leftSide" + FRONT] = [[BOTTOM, CW]].concat(rightFaceToLeftSide);
 exports["rightSide" + FRONT] = [[BOTTOM, CCW]].concat(leftFaceToRightSide);
 exports["leftSide" + LEFT] = [[BOTTOM, CCW], [BOTTOM, CCW]].concat(rightFaceToLeftSide);
-exports["rightSide" + LEFT] = leftFaceToRightSide
-exports["leftSide" + RIGHT] = rightFaceToLeftSide
+exports["rightSide" + LEFT] = leftFaceToRightSide;
+exports["leftSide" + RIGHT] = rightFaceToLeftSide;
 exports["rightSide" + RIGHT] = [[BOTTOM, CCW], [BOTTOM, CCW]].concat(leftFaceToRightSide);
 exports["leftSide" + BACK] = [[BOTTOM, CCW]].concat(rightFaceToLeftSide);
 exports["rightSide" + BACK] = [[BOTTOM, CW]].concat(leftFaceToRightSide);
