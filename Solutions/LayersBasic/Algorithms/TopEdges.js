@@ -6,13 +6,14 @@ const   constants = require('node-cube-model').constants,
         FRONT = constants.FACES.FRONT,
         RIGHT = constants.FACES.RIGHT,
         BACK = constants.FACES.BACK,
-        BOTTOM = constants.FACES.BOTTOM,
         CW = constants.FACEROTATIONS.CW,
         CCW = constants.FACEROTATIONS.CCW,
-        ROTATECUBECCW = constants.CUBEROTATIONS.CCW,
-        ROTATECUBECW = constants.CUBEROTATIONS.CW;
+        ROTATECUBEBACK = constants.CUBEROTATIONS.BACK,
+        ROTATECUBEFORWARD = constants.CUBEROTATIONS.FORWARD;
 
-exports[CW] = [];
-exports[CCW] = [];
+// Rotate positions 1, 5, and 7 of the top face clockwise or counter clockwise.
+exports['clockWise'] = [[RIGHT, CW], [RIGHT, CW], [TOP, CW], [FRONT, CW], [BACK, CCW], [RIGHT, CW], [RIGHT, CW], [BACK, CW], [FRONT, CCW], [TOP, CW], [RIGHT, CW], [RIGHT, CW]];
+exports['counterClockWise'] = [[RIGHT, CW], [RIGHT, CW], [TOP, CCW], [FRONT, CW], [BACK, CCW], [RIGHT, CW], [RIGHT, CW], [BACK, CW], [FRONT, CCW], [TOP, CCW], [RIGHT, CW], [RIGHT, CW]];
 
-exports['flipBackAndRightEdges'] = [];
+// Flip positions 1 and 5 of the top face.
+exports['flipBackAndRightEdges'] = [[LEFT, CW], [RIGHT, CCW], ROTATECUBEBACK, [TOP, CCW], [LEFT, CCW], [RIGHT, CW], ROTATECUBEFORWARD, [TOP, CW], [TOP, CW], [LEFT,CW], [RIGHT, CCW], ROTATECUBEBACK, [TOP, CCW], [LEFT, CCW], [RIGHT, CW], ROTATECUBEFORWARD];

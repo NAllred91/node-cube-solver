@@ -21,7 +21,7 @@ module.exports = function(cube) {
 
                 // Get the two pieces that belong in the middle for the front face.
                 var piecesForThisFace = _.map([[FACES.LEFT, FACES.FRONT], [FACES.FRONT, FACES.RIGHT]], function(faces) {
-                    return cube.getPiece(faces);
+                    return cube.getPieceByDestinationLocation(faces);
                 });
 
                 // Get the colors of the front, right, and left faces.
@@ -84,7 +84,7 @@ module.exports = function(cube) {
         ];
 
         var incorrectPieceFaces = _.find(pieceFaces, function(faces) {
-            var piece = cube.getPiece(faces);
+            var piece = cube.getPieceByDestinationLocation(faces);
             var stickers = piece.stickers;
 
             if(cube.getFaceColor(stickers[0].face) !== stickers[0].color

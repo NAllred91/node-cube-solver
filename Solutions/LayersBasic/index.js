@@ -3,7 +3,8 @@ const constants = require('node-cube-model').constants;
 var validation = require('./validation'),
     solveTop = require('./solveTop'),
     solveMiddle = require('./solveMiddle'),
-    solveTopCorners = require('./solveTopCorners');
+    solveTopCorners = require('./solveTopCorners'),
+    solveTopEdges = require('./solveTopEdges');
 
 module.exports = function(cube) {
     solveTop(cube);
@@ -16,4 +17,8 @@ module.exports = function(cube) {
     cube.rotateCube(constants.CUBEROTATIONS.BACK);
     cube.rotateCube(constants.CUBEROTATIONS.BACK);
     validation.validateBottomCornersSolved(cube);
+    cube.rotateCube(constants.CUBEROTATIONS.BACK);
+    cube.rotateCube(constants.CUBEROTATIONS.BACK);
+    solveTopEdges(cube);
+    validation.validateCubeSolved(cube);
 };

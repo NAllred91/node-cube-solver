@@ -9,7 +9,7 @@ var utility = require('../../utility'),
 
 module.exports = function(cube) {
     var positionTopLeftCorner = function() {
-        var piece = cube.getPiece([FACES.TOP, FACES.LEFT, FACES.BACK]);
+        var piece = cube.getPieceByDestinationLocation([FACES.TOP, FACES.LEFT, FACES.BACK]);
 
         var topFaceColor = cube.getFaceColor(constants.FACES.TOP);
         var topColorSticker = piece.getStickerOfColor(topFaceColor);
@@ -27,7 +27,7 @@ module.exports = function(cube) {
     };
 
     var positionTopBackEdge = function() {
-        var piece = cube.getPiece([FACES.TOP, FACES.BACK]);
+        var piece = cube.getPieceByDestinationLocation([FACES.TOP, FACES.BACK]);
 
         var topFaceColor = cube.getFaceColor(constants.FACES.TOP);
         var topColorSticker = piece.getStickerOfColor(topFaceColor);

@@ -53,8 +53,19 @@ var validateBottomCornersSolved = function(cube) {
     }
 };
 
+var validateCubeSolved = function(cube) {
+    var cubeArray = cube.getFacesArray();
+
+    _.each(cubeArray, function(face) {
+        if(_.unique(face).length !== 1) {
+            throw new Error("Invalid solution, cube is not solved");
+        }
+    });
+};
+
 module.exports = {
     validateTopSolved: validateTopSolved,
     validateMiddleSolved: validateMiddleSolved,
-    validateBottomCornersSolved: validateBottomCornersSolved
+    validateBottomCornersSolved: validateBottomCornersSolved,
+    validateCubeSolved: validateCubeSolved
 };
